@@ -4,13 +4,20 @@ import Signup from "./pages/Signup";
 import Authen from "./pages/Authen";
 import Test from "./pages/Test";
 import ForgotPassword from "./pages/ForgotPassword";
+import MyAccount from "./pages/MyAccount";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
     <Routes>
-      <Route path="/test" element={<Test />} />
+      <Route path="/myaccount" element={<MyAccount />}>
+        <Route index element={<Profile />} />
+        <Route path="profile" element={<Profile />} />
+      </Route>
+
       <Route path="/" element={<Authen />}>
-        <Route index path="/login" element={<Login />} />
+        <Route index element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
       </Route>
