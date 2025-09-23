@@ -7,8 +7,6 @@ function Authen() {
       <div className="flex-1 flex flex-col items-center justify-center ml-24">
         <img className="w-60 h-60 object-contain" src="/logo.png" alt="logo" />
 
-        {/* <p className="text-lg font-bold mb-10">Shopping</p> */}
-
         <TextType
           text={[
             "Nền tảng thương mại điện tử được yêu thích",

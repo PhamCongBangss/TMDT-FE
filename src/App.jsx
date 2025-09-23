@@ -6,6 +6,8 @@ import Test from "./pages/Test";
 import ForgotPassword from "./pages/ForgotPassword";
 import MyAccount from "./pages/MyAccount";
 import Profile from "./pages/Profile";
+import Address from "./pages/Address";
+import ChangePassword from "./pages/ChangePassword";
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
       <Route path="/myaccount" element={<MyAccount />}>
         <Route index element={<Profile />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="address" element={<Address />} />
+        <Route path="change-password" element={<ChangePassword />} />
       </Route>
 
       <Route path="/" element={<Authen />}>

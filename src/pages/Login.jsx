@@ -1,28 +1,25 @@
 import Input from "../components/Input";
 import FadeContent from "../components/FadeContent";
 import { useState } from "react";
-import api from "../utils/api";
 import useToast from "../hooks/useToast";
 import SpinnerLoad from "../components/Spinner";
 import { Checkbox } from "@heroui/checkbox";
 
 import { Link, useNavigate } from "react-router-dom";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "../icons/icons";
+import useAuth from "../hooks/useAuth";
 
 export default function Login() {
   const [isVisible, setIsVisible] = useState(false);
-  const [isloading, setIsLoading] = useState(false);
   const [form, setForm] = useState({
     username: "",
     password: "",
   });
 
+  const { login } = useAuth();
   const navigate = useNavigate();
-
   const toast = useToast();
-
   const toggleVisibility = () => setIsVisible(!isVisible);
-
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -30,22 +27,20 @@ export default function Login() {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      await api.post("/users/login", {
-        username: form.username,
-        password: form.password,
-      });
-      toast.success("Đăng nhập thành công");
-      navigate("/test");
-    } catch (err) {
-      toast.error("Có lỗi xảy ra", err.response.data.message);
-    } finally {
-      setIsLoading(false);
-    }
+    login.mutate(form, {
+      onSuccess: () => {
+        toast.success("Đăng nhập thành công");
+        navigate("/myaccount");
+      },
+      onError: (err) => {
+        toast.error(
+          "Có lỗi xảy ra",
+          err.response?.data?.message || "Thử lại sau"
+        );
+      },
+    });
   };
 
   return (
@@ -102,7 +97,7 @@ export default function Login() {
             <Checkbox>Ghi nhớ đăng nhập</Checkbox>
           </div>
 
-          {isloading ? (
+          {login.isPending ? (
             <button
               className=" flex justify-center gap-3 cursor-not-allowed w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-lg 
                    hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 opacity-80 "

@@ -7,30 +7,12 @@ import {
   TicketIcon,
 } from "@heroicons/react/24/outline";
 import { NavLink } from "react-router-dom";
-import { useEffect, useState } from "react";
-import api from "../utils/api";
+import { useState } from "react";
+import useAuth from "../hooks/useAuth";
 
 export default function Sidebar() {
   const [open, setOpen] = useState("Tài Khoản của tôi");
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await api.get("/users/me", {
-          withCredentials: true,
-        });
-        setUser(res.data.data.user);
-      } catch (err) {
-        console.error(
-          "JWT không hợp lệ hoặc chưa login:",
-          err.response?.data.message
-        );
-      }
-    };
-
-    checkAuth();
-  }, []);
+  const { user, isLoading } = useAuth();
 
   const menu = [
     { name: "Thông báo", icon: BellIcon, link: "/notifications" },
@@ -39,8 +21,8 @@ export default function Sidebar() {
       icon: UserIcon,
       children: [
         { name: "Hồ sơ", link: "/myaccount/profile" },
-        { name: "Địa chỉ", link: "/address" },
-        { name: "Đổi mật khẩu", link: "/change-password" },
+        { name: "Địa chỉ", link: "/myaccount/address" },
+        { name: "Đổi mật khẩu", link: "/myaccount/change-password" },
       ],
     },
     {
@@ -55,7 +37,8 @@ export default function Sidebar() {
     { name: "Cài đặt", icon: Cog6ToothIcon, link: "/settings" },
   ];
 
-  if (!user) return;
+  if (isLoading) return <p>Isloading</p>;
+  if (!user) return <p>Chưa đăng nhập</p>;
   return (
     <div className="h-screen bg-gray-100 border-r border-gray-200 p-4 flex flex-col">
       <div className="mt-auto flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-200 cursor-pointer">

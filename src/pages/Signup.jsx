@@ -1,7 +1,6 @@
 import Input from "../components/Input";
 import FadeContent from "../components/FadeContent";
 import { useEffect, useState } from "react";
-import api from "../utils/api";
 import useToast from "../hooks/useToast";
 import SpinnerLoad from "../components/Spinner";
 import InputOTP from "../components/InputOTP";
@@ -12,16 +11,19 @@ import {
   EyeSlashFilledIcon,
   LeftArrowIcon,
 } from "../icons/icons";
+import useAuth from "../hooks/useAuth";
 
 export default function Signup() {
   const [showResend, setShowResend] = useState(false);
   const [isVisible1, setIsVisible1] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
-  const [isloading, setIsLoading] = useState(false);
   const [otpError, setOtpError] = useState(false);
   const [otp, setOtp] = useState("");
   const [openOtp, setOpenOtp] = useState(false);
   const [resetTimer, setResetTimer] = useState(0);
+
+  const { signup, resendOtp, verifyOtp } = useAuth();
+
   const [form, setForm] = useState({
     username: "",
     email: "",
@@ -53,57 +55,47 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      await api.post("/users/signup", {
-        username: form.username,
-        email: form.email,
-        password: form.password,
-        passwordConfirm: form.passwordConfirm,
-      });
-      toast.success("Đăng ký thành công", "Vui lòng xác thực tài khoản");
-      setOpenOtp(true);
-    } catch (err) {
-      toast.error("Có lỗi xảy ra", err.response.data.message);
-    } finally {
-      setIsLoading(false);
-    }
+    signup.mutate(form, {
+      onSuccess: () => {
+        toast.success("Đăng ký thành công", "Vui lòng xác thực tài khoản");
+        setOpenOtp(true);
+      },
+      onError: (err) => {
+        toast.error("Có lỗi xảy ra", err.response.data.message);
+      },
+    });
   };
 
-  const handleResendOtp = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      await api.post("/users/resend-otp", {
-        email: form.email,
-      });
-      toast.success("OTP đã được gửi lại", "Vui lòng kiểm tra lại email.");
-      setResetTimer((k) => k + 1);
-      setShowResend(false);
-    } catch (err) {
-      toast.error(
-        "Có lỗi xảy ra",
-        err.response?.data?.message || "Không thể gửi lại OTP"
-      );
-    } finally {
-      setIsLoading(false);
-    }
+  const handleResendOtp = () => {
+    resendOtp.mutate(
+      { email: form.email },
+      {
+        onSuccess: () => {
+          toast.success("OTP đã được gửi lại", "Vui lòng kiểm tra email");
+          setResetTimer((k) => k + 1);
+          setShowResend(false);
+        },
+        onError: (err) => {
+          toast.error("Có lỗi xảy ra", err.response?.data?.message);
+        },
+      }
+    );
   };
 
-  const handleVerifyOtp = async () => {
-    try {
-      await api.post("/users/verify-otp", {
-        email: form.email,
-        otp,
-      });
-      toast.success("Đăng ký thành công", "Bạn có thể đăng nhập ngay");
-      navigate("/login");
-    } catch (err) {
-      setOtpError(true);
-
-      toast.error("Có lỗi xảy ra", err.response.data.message);
-    }
+  const handleVerifyOtp = () => {
+    verifyOtp.mutate(
+      { email: form.email, otp },
+      {
+        onSuccess: () => {
+          toast.success("Xác thực thành công", "Bạn đã đăng nhập rồi 🎉");
+          navigate("/myaccount");
+        },
+        onError: (err) => {
+          setOtpError(true);
+          toast.error("Có lỗi xảy ra", err.response?.data?.message);
+        },
+      }
+    );
   };
 
   return (
@@ -186,7 +178,7 @@ export default function Signup() {
                 />
               )}
             </div>
-            {isloading ? (
+            {signup.isPending ? (
               <button
                 className=" flex justify-center gap-3 cursor-not-allowed w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-lg 
                    hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 opacity-80 "
@@ -252,7 +244,7 @@ export default function Signup() {
 
             {showResend && (
               <div>
-                {!isloading ? (
+                {!resendOtp.isPending ? (
                   <p className="text-center d text-gray-600">
                     Không nhận được mã?{" "}
                     <span
