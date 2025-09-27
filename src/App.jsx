@@ -8,6 +8,8 @@ import MyAccount from "./pages/MyAccount";
 import Profile from "./pages/Profile";
 import Address from "./pages/Address";
 import ChangePassword from "./pages/ChangePassword";
+import Products from "./pages/Products";
+import ProductDetail from "./pages/ProductDetail";
 
 function App() {
   return (
@@ -19,12 +21,15 @@ function App() {
         <Route path="change-password" element={<ChangePassword />} />
       </Route>
 
-      <Route path="/" element={<Authen />}>
+      <Route path="/authen" element={<Authen />}>
         <Route index element={<Login />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="login" element={<Login />} />
+        <Route path="signup" element={<Signup />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
       </Route>
+      <Route path="/test" element={<Test />} />
+      <Route path="/products" element={<Products />} />
+      <Route path="/products/detail" element={<ProductDetail />} />
     </Routes>
   );
 }

@@ -198,7 +198,10 @@ export default function Signup() {
             )}
             <p className="text-sm text-gray-600 text-center">
               Đã có tài khoản?{" "}
-              <Link to="/login" className="text-blue-600 hover:underline">
+              <Link
+                to="/authen/login"
+                className="text-blue-600 hover:underline"
+              >
                 Đăng nhập
               </Link>
             </p>

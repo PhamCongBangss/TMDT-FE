@@ -140,7 +140,7 @@ export default function ForgotPassword() {
                 Quên mật khẩu?
               </h2>
               <div
-                onClick={() => navigate("/login")}
+                onClick={() => navigate("/authen/login")}
                 className="absolute left-0 top-1 rounded-md 
                hover:bg-blue-100 cursor-pointer transition-colors"
               >
@@ -248,7 +248,7 @@ export default function ForgotPassword() {
               Nhập mật khẩu mới
             </h2>
             <div
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/authen/login")}
               className="absolute left-0 top-1 rounded-md 
                hover:bg-blue-100 cursor-pointer transition-colors"
             >

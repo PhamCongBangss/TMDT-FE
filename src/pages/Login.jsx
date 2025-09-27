@@ -116,11 +116,11 @@ export default function Login() {
             </button>
           )}
           <p className="text-sm text-blue-600 text-center hover:underline cursor-pointer">
-            <Link to="/forgot-password">Quên mật khẩu?</Link>
+            <Link to="/authen/forgot-password">Quên mật khẩu?</Link>
           </p>
           <p className="text-sm text-gray-600 text-center">
             Chưa có tài khoản?{" "}
-            <Link to="/signup" className="text-blue-600 hover:underline">
+            <Link to="/authen/signup" className="text-blue-600 hover:underline">
               Đăng ký
             </Link>
           </p>
